@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | MOTIONNODEEDITS</title>
+  <meta name="description" content="Premium video editing and creative agency services by motionnodeedits.">
+  <meta name="keywords" content="video editing, creative agency, motion graphics">
+  <meta property="og:title" content="motionnodeedits">
+  <meta property="og:description" content="Premium editing agency">
+  <meta property="og:image" content="/image/logo.png">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/png" href="image/logo.png">
+  <style>
+    .admin-page { padding: 8rem 0 4rem; min-height: 100vh; position: relative; }
+    
+    /* Login Screen */
+    #adminLogin {
+      max-width: 400px; margin: 4rem auto; padding: 2.5rem; text-align: center;
+      background: var(--bg-card-glass); backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color); border-radius: 20px;
+    }
+    #adminLogin h2 { margin-bottom: 1.5rem; font-family: var(--font-heading); }
+    #adminLogin input {
+      width: 100%; padding: 1rem; margin-bottom: 1.5rem;
+      background: rgba(255,255,255,0.05); border: 1px solid var(--border-color);
+      border-radius: 12px; color: #fff; font-family: var(--font-body);
+      text-align: center; letter-spacing: 0.2em;
+    }
+    #adminLogin input:focus { outline: none; border-color: var(--accent); }
+    #adminLogin button { width: 100%; }
+
+    #adminContent { display: none; }
+    
+    .admin-header { margin-bottom: 3rem; }
+    .admin-header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .admin-header p { color: var(--text-secondary); }
+
+    .admin-add-form {
+      padding: 2rem; border-radius: 16px; margin-bottom: 3rem;
+      background: var(--bg-card-glass); backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+    }
+    .admin-add-form h3 { margin-bottom: 1.5rem; font-family: var(--font-heading); }
+    .admin-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .admin-form-grid .form-group:first-child { grid-column: span 2; }
+    @media(max-width:600px) { .admin-form-grid { grid-template-columns: 1fr; }
+      .admin-form-grid .form-group:first-child { grid-column: span 1; } }
+
+    .admin-video-row {
+      display: flex; align-items: center; gap: 1.5rem; padding: 1rem 1.5rem;
+      border-radius: 12px; margin-bottom: 0.75rem;
+      background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);
+      transition: background 0.3s;
+    }
+    .admin-video-row:hover { background: rgba(255,255,255,0.04); }
+    .admin-thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
+    .admin-video-info { flex: 1; min-width: 0; }
+    .admin-video-info strong { display: block; font-family: var(--font-heading); margin-bottom: 0.3rem; }
+    .admin-video-cat {
+      display: inline-block; font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--text-muted); background: rgba(255,255,255,0.05);
+      padding: 0.2rem 0.6rem; border-radius: 100px;
+    }
+    .admin-video-desc { display: block; font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.3rem; }
+    .admin-video-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
+    .admin-btn {
+      padding: 0.4rem 0.8rem; font-size: 0.75rem; border-radius: 8px;
+      border: 1px solid var(--border-color); color: var(--text-secondary);
+      font-family: var(--font-heading); font-weight: 600; transition: all 0.3s;
+      cursor: pointer; background: transparent;
+    }
+    .admin-btn:hover { border-color: rgba(255,255,255,0.3); color: #fff; }
+    .admin-btn-delete:hover { border-color: #ff4444; color: #ff4444; }
+    .admin-btn-edit:hover { border-color: #4488ff; color: #4488ff; }
+
+    .admin-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    .admin-toolbar h3 { font-family: var(--font-heading); }
+
+    /* Category Manager Styles */
+    .admin-categories {
+      padding: 2rem; border-radius: 16px; margin-bottom: 3rem;
+      background: var(--bg-card-glass); backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+    }
+    .admin-categories h3 { margin-bottom: 1.5rem; font-family: var(--font-heading); }
+    .cat-add-row {
+      display: flex; gap: 0.75rem; margin-bottom: 1.5rem; align-items: flex-end;
+    }
+    .cat-add-row .form-group { flex: 1; margin: 0; }
+    .cat-add-row .form-group label { margin-bottom: 0.4rem; }
+    .cat-add-row button { height: 44px; white-space: nowrap; padding: 0 1.5rem; flex-shrink: 0; }
+    @media(max-width:600px) { .cat-add-row { flex-direction: column; } .cat-add-row button { width: 100%; } }
+
+    .cat-list { display: flex; flex-direction: column; gap: 0.6rem; }
+    .cat-row {
+      display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1.2rem;
+      border-radius: 10px; background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border-color); transition: background 0.3s;
+    }
+    .cat-row:hover { background: rgba(255,255,255,0.04); }
+    .cat-row .cat-slug {
+      font-size: 0.7rem; color: var(--text-muted); background: rgba(255,255,255,0.05);
+      padding: 0.2rem 0.6rem; border-radius: 100px; letter-spacing: 0.05em;
+      font-family: monospace; flex-shrink: 0;
+    }
+    .cat-row .cat-label {
+      flex: 1; font-family: var(--font-heading); font-weight: 600; font-size: 0.95rem;
+    }
+    .cat-row .cat-count {
+      font-size: 0.75rem; color: var(--text-secondary); flex-shrink: 0;
+    }
+    .cat-row .cat-actions { display: flex; gap: 0.4rem; flex-shrink: 0; }
+
+    #adminToast {
+      position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px);
+      background: #fff; color: #000; padding: 0.8rem 2rem; border-radius: 100px;
+      font-family: var(--font-heading); font-weight: 600; font-size: 0.85rem;
+      transition: transform 0.4s var(--ease-out); z-index: 9999;
+    }
+    #adminToast.show { transform: translateX(-50%) translateY(0); }
+
+    @media(max-width:600px) {
+      .admin-video-row { flex-direction: column; align-items: flex-start; }
+      .admin-thumb { width: 100%; height: auto; }
+    }
+  </style>
+</head>
+<body>
+<div class="custom-cursor"></div>
+<nav class="navbar">
+  <a href="index.html"><img src="image/logo.png" alt="MotionNodeEdits" class="logo" style="height: 75px;"></a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="portfolio.html">Portfolio</a>
+    <a href="admin.html" class="active">Admin</a>
+  </div>
+  <div class="nav-cta"><a href="index.html#contact" class="btn-primary">Contact Us</a></div>
+  <div class="hamburger"><span></span><span></span><span></span></div>
+</nav>
+
+<section class="admin-page">
+  <div class="container" id="adminLogin">
+    <h2>Admin Access</h2>
+    <input type="password" id="adminPwd" placeholder="PASSWORD" onkeydown="if(event.key === 'Enter') loginAdmin()">
+    <button class="btn-primary" onclick="loginAdmin()">Enter</button>
+  </div>
+
+  <div class="container" id="adminContent">
+    <div class="admin-header">
+      <h1>Admin Panel</h1>
+      <p>Manage your portfolio videos. Changes save to localStorage and appear on the live site.</p>
+    </div>
+
+    <div class="admin-add-form">
+      <h3>+ Add New Video</h3>
+      <div class="admin-form-grid">
+        <div class="form-group">
+          <label>YouTube URL or Video ID</label>
+          <input type="text" id="addUrl" placeholder="https://youtube.com/watch?v=... or video ID">
+        </div>
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" id="addTitle" placeholder="Video title">
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select id="addCategory">
+            <option value="ai-ads">AI Ads</option>
+            <option value="ai-reels">AI Reels</option>
+            <option value="ai-avatar">AI Avatar Videos</option>
+            <option value="real-estate">Real Estate</option>
+            <option value="post-production">Post Production</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Description (optional)</label>
+        <input type="text" id="addDesc" placeholder="Short description">
+      </div>
+      <button class="btn-primary" onclick="addVideo()" style="margin-top:0.5rem;">Add Video</button>
+    </div>
+
+    <!-- Category Manager -->
+    <div class="admin-categories">
+      <h3>🏷️ Manage Categories</h3>
+      <div class="cat-add-row">
+        <div class="form-group">
+          <label>Category Name</label>
+          <input type="text" id="newCatName" placeholder="e.g. Motion Graphics">
+        </div>
+        <div class="form-group">
+          <label>Slug (auto)</label>
+          <input type="text" id="newCatSlug" placeholder="auto-generated" readonly style="opacity:0.6;cursor:default;">
+        </div>
+        <button class="btn-primary" onclick="addCategory()" style="font-size:0.85rem;">+ Add</button>
+      </div>
+      <div class="cat-list" id="categoryList"></div>
+    </div>
+
+    <div class="admin-toolbar">
+      <h3>Portfolio Videos</h3>
+      <button class="btn-outline" onclick="resetPortfolio()" style="padding:0.5rem 1.2rem; font-size:0.8rem;">Reset to Defaults</button>
+    </div>
+
+    <div id="adminVideoList"></div>
+  </div>
+</section>
+
+<div id="adminToast"></div>
+
+<script src="js/admin.js"></script>
+<script>
+  // Navbar scroll & hamburger
+  const nav = document.querySelector('.navbar');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 50));
+  const ham = document.querySelector('.hamburger');
+  const links = document.querySelector('.nav-links');
+  if (ham) ham.addEventListener('click', () => { ham.classList.toggle('active'); links.classList.toggle('open'); });
+</script>
+</body>
+</html>

@@ -565,11 +565,24 @@
   function initContactForm() {
     const form    = document.getElementById('ctaForm');
     const success = document.getElementById('cfSuccess');
+    const error   = document.getElementById('cfError');
     const submitBtn = document.getElementById('cfSubmit');
+    const emailInput = document.getElementById('cfEmail');
     if (!form) return;
 
     form.addEventListener('submit', async e => {
       e.preventDefault();
+
+      if (error) error.style.display = 'none';
+
+      // Custom Email Format Validation
+      const emailVal = emailInput ? emailInput.value.trim() : '';
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(emailVal)) {
+        if (error) error.style.display = 'block';
+        return;
+      }
+
       if (submitBtn) {
         submitBtn.disabled = true;
         const sp = submitBtn.querySelector('span');

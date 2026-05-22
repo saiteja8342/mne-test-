@@ -22,6 +22,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/main.css">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y6RTH7XM5F"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-Y6RTH7XM5F');
+  </script>
 </head>
 <body>
 
@@ -556,7 +566,7 @@
         <h2 class="cta-title" id="cta-title">Ready to Create<br>Something <em>Cinematic?</em></h2>
         <p class="cta-sub">Tell us about your project. We respond within 24 hours.</p>
 
-        <form class="cta-form" id="ctaForm" action="https://formspree.io/f/mzdokokr" method="POST" novalidate>
+        <form class="cta-form" id="ctaForm" action="https://formspree.io/f/mzdokokr" method="POST">
           <input type="hidden" name="_subject" value="New Project Enquiry — MOTIONNODEEDITS">
           <div class="cf-row">
             <div class="cf-field">
@@ -567,6 +577,10 @@
               <input type="email" name="email" id="cfEmail" required placeholder=" " autocomplete="email">
               <label for="cfEmail">Email Address</label>
             </div>
+          </div>
+          <div class="cf-field">
+            <input type="tel" name="whatsapp" id="cfWa" placeholder=" " autocomplete="tel">
+            <label for="cfWa">WhatsApp Number (Optional)</label>
           </div>
           <div class="cf-field">
             <textarea name="message" id="cfMsg" rows="4" required placeholder=" "></textarea>
@@ -591,12 +605,17 @@
           </div>
         </form>
 
+        
         <div class="cf-success" id="cfSuccess">
           <div class="cfs-icon">✓</div>
           <h3>Message received!</h3>
           <p>We'll get back to you within 24 hours.</p>
         </div>
-      </div>
+
+        <div class="cf-error" id="cfError" style="display:none; color:#ef4444; margin-top:16px; font-weight:600; padding:12px; background:rgba(239,68,68,0.1); border-radius:8px; border:1px solid rgba(239,68,68,0.2);">
+          Mail is wrong! Please enter a valid email address.
+        </div>
+
 
     </div>
   </div>

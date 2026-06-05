@@ -1,0 +1,528 @@
+<!-- ═══════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════ -->
+<style>
+  /* Premium Cinematic Hero - Redesign */
+  .premium-hero {
+    position: relative;
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #050816;
+    text-align: center;
+    padding-top: 140px; /* Offset for nav */
+    padding-bottom: 80px;
+  }
+
+  /* Background Elements */
+  .ph-glow {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw; height: 100vh;
+    background: radial-gradient(circle at center, rgba(59, 130, 246, 0.15) 0%, rgba(124, 58, 237, 0.05) 50%, transparent 80%);
+    z-index: 1;
+    pointer-events: none;
+    animation: pulseGlow 8s ease-in-out infinite alternate;
+  }
+  
+  @keyframes pulseGlow {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+    100% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+  }
+  
+  .ph-particles {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.3;
+    z-index: 1;
+    pointer-events: none;
+    animation: moveParticles 60s linear infinite;
+  }
+
+  @keyframes moveParticles {
+    0% { background-position: 0 0; }
+    100% { background-position: 1000px 1000px; }
+  }
+
+  .ph-streaks {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: 
+      linear-gradient(45deg, transparent 40%, rgba(59, 130, 246, 0.03) 50%, transparent 60%),
+      linear-gradient(-45deg, transparent 40%, rgba(124, 58, 237, 0.03) 50%, transparent 60%);
+    background-size: 200% 200%;
+    animation: lightStreaks 15s ease infinite;
+  }
+
+  @keyframes lightStreaks {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Centered Container */
+  .ph-container {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Top Badge */
+  .ph-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 100px;
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    opacity: 0;
+    transform: translateY(20px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .ph-badge-dot {
+    width: 8px; height: 8px;
+    background: #10b981;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #10b981;
+    animation: pulseDot 2s infinite;
+  }
+  
+  @keyframes pulseDot {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+    70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+  }
+
+  /* Headline */
+  .ph-title {
+    font-family: var(--ff-head, 'Bebas Neue', sans-serif);
+    font-size: clamp(4rem, 8vw, 8rem);
+    line-height: 0.9;
+    color: #fff;
+    margin-bottom: 40px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .ph-title-line {
+    display: block;
+    overflow: hidden;
+  }
+  
+  .ph-title-inner {
+    display: block;
+    opacity: 0;
+    transform: translateY(100%);
+  }
+
+  .ph-highlight {
+    background: linear-gradient(135deg, #60a5fa, #a855f7, #3b82f6);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+    animation: gradientFlow 5s ease infinite;
+  }
+
+  @keyframes gradientFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Trust Row */
+  .ph-trust-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .ph-stars {
+    color: #f59e0b;
+    font-size: 1.2rem;
+    letter-spacing: 4px;
+  }
+
+  .ph-trust-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .ph-avatars {
+    display: flex;
+  }
+
+  .ph-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #050816;
+    margin-left: -12px;
+    background: #333;
+    object-fit: cover;
+  }
+  
+  .ph-avatar:first-child {
+    margin-left: 0;
+  }
+
+  .ph-trust-text {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+  }
+  
+  .ph-trust-metrics {
+    display: flex;
+    gap: 24px;
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  
+  @media (max-width: 768px) {
+    .ph-trust-metrics {
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+    }
+  }
+
+  /* Subtitle */
+  .ph-subtitle {
+    font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+    color: rgba(255, 255, 255, 0.7);
+    max-width: 700px;
+    margin-bottom: 40px;
+    line-height: 1.6;
+    opacity: 0;
+    transform: translateY(20px);
+    text-align: center;
+  }
+
+  /* Buttons */
+  .ph-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 60px;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  @media (max-width: 600px) {
+    .ph-actions {
+      flex-direction: column;
+      width: 100%;
+    }
+    .ph-btn-primary, .ph-btn-secondary {
+      width: 100%;
+    }
+  }
+
+  .ph-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 48px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 15px 30px rgba(99, 102, 241, 0.2), inset 0 1px 0 rgba(255,255,255,0.2);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .ph-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px rgba(99, 102, 241, 0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+  }
+
+  .ph-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 18px 48px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: all 0.4s ease;
+  }
+
+  .ph-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Visual Showcase */
+  .ph-showcase {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    opacity: 0;
+    transform: translateY(40px);
+    z-index: 10;
+  }
+
+  @media (max-width: 1024px) {
+    .ph-showcase { grid-template-columns: repeat(2, 1fr); }
+  }
+  
+  @media (max-width: 600px) {
+    .ph-showcase { grid-template-columns: 1fr; }
+  }
+
+  .ph-card {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    aspect-ratio: 9/16;
+    background: #111;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .ph-card:hover {
+    transform: translateY(-10px);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 30px 60px rgba(124, 58, 237, 0.2);
+  }
+
+  .ph-card:nth-child(even) {
+    margin-top: 24px;
+  }
+
+  .ph-card video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+  }
+
+  .ph-card:hover video {
+    opacity: 1;
+  }
+
+  .ph-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .ph-card-label {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    z-index: 2;
+  }
+</style>
+
+<section class="premium-hero" id="hero" aria-label="Hero section">
+  
+  <div class="ph-glow"></div>
+  <div class="ph-particles"></div>
+  <div class="ph-streaks"></div>
+
+  <div class="ph-container">
+    <div class="ph-badge" id="phBadge">
+      <div class="ph-badge-dot"></div>
+      AVAILABLE FOR PROJECTS
+    </div>
+
+    <h1 class="ph-title" id="phTitle">
+      <span class="ph-title-line"><span class="ph-title-inner">TURN RAW FOOTAGE</span></span>
+      <span class="ph-title-line"><span class="ph-title-inner">INTO CONTENT THAT</span></span>
+      <span class="ph-title-line"><span class="ph-title-inner ph-highlight">CAPTURES ATTENTION</span></span>
+    </h1>
+
+    <div class="ph-trust-row" id="phTrustRow">
+      <div class="ph-stars">★★★★★</div>
+      <div class="ph-trust-content">
+        <div class="ph-avatars">
+          <img src="https://i.pravatar.cc/100?img=1" alt="Client" class="ph-avatar">
+          <img src="https://i.pravatar.cc/100?img=2" alt="Client" class="ph-avatar">
+          <img src="https://i.pravatar.cc/100?img=3" alt="Client" class="ph-avatar">
+          <img src="https://i.pravatar.cc/100?img=4" alt="Client" class="ph-avatar">
+        </div>
+        <div class="ph-trust-text">Trusted by Creators, Brands & Businesses</div>
+      </div>
+      <div class="ph-trust-metrics">
+        <span>500+ Projects Delivered</span>
+        <span>10M+ Views Generated</span>
+        <span>48H Delivery</span>
+      </div>
+    </div>
+
+    <p class="ph-subtitle" id="phSubtitle">
+      Professional video editing, AI enhancement, commercial ads, reels, shorts and cinematic content.<br>
+      Built to increase engagement, brand value and conversions.
+    </p>
+
+    <div class="ph-actions" id="phActions">
+      <a href="#contact" class="ph-btn-primary magnetic-btn">Get Free Quote</a>
+      <a href="#showreel" class="ph-btn-secondary magnetic-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+        Watch Showreel
+      </a>
+    </div>
+
+    <div class="ph-showcase" id="phShowcase">
+      <div class="ph-card">
+        <video muted loop playsinline autoplay preload="auto">
+          <source src="assets/posters/ai-coffee-preview.mp4" type="video/mp4">
+        </video>
+        <div class="ph-card-overlay"></div>
+        <div class="ph-card-label">Commercial Ads</div>
+      </div>
+      <div class="ph-card">
+        <video muted loop playsinline autoplay preload="auto">
+          <source src="assets/posters/ai-sweet-preview.mp4" type="video/mp4">
+        </video>
+        <div class="ph-card-overlay"></div>
+        <div class="ph-card-label">Reels & Shorts</div>
+      </div>
+      <div class="ph-card">
+        <video muted loop playsinline autoplay preload="auto">
+          <source src="assets/posters/ai-hanuman-preview.mp4" type="video/mp4">
+        </video>
+        <div class="ph-card-overlay"></div>
+        <div class="ph-card-label">AI Avatars</div>
+      </div>
+      <div class="ph-card">
+        <video muted loop playsinline autoplay preload="auto">
+          <source src="assets/posters/showreel-hero.mp4" type="video/mp4">
+        </video>
+        <div class="ph-card-overlay"></div>
+        <div class="ph-card-label">Motion Graphics</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    if (typeof gsap === 'undefined') return;
+
+    const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+
+    // 1. Badge fades in
+    tl.to("#phBadge", { opacity: 1, y: 0, duration: 1 }, 0.2);
+
+    // 2. Headline reveals line by line
+    tl.to(".ph-title-inner", { 
+      opacity: 1, 
+      y: 0, 
+      duration: 1.2, 
+      stagger: 0.15 
+    }, 0.3);
+
+    // 3. Trust row fades in
+    tl.to("#phTrustRow", { opacity: 1, y: 0, duration: 1 }, 0.8);
+
+    // 4. Subtitle fades in
+    tl.to("#phSubtitle", { opacity: 1, y: 0, duration: 1 }, 1.0);
+
+    // 5. Buttons animate upward
+    tl.to("#phActions", { opacity: 1, y: 0, duration: 1 }, 1.2);
+
+    // 6. Showcase cards float slightly
+    tl.to(".ph-showcase", { opacity: 1, y: 0, duration: 1.5, ease: "back.out(1.2)" }, 1.4);
+    tl.fromTo(".ph-card", 
+      { y: 40, opacity: 0 }, 
+      { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: "power3.out" }, 
+      1.4
+    );
+
+    // Scroll parallax for showcase cards
+    gsap.to(".ph-showcase", {
+      yPercent: -15,
+      ease: "none",
+      scrollTrigger: {
+        trigger: "#hero",
+        start: "top top",
+        end: "bottom top",
+        scrub: true
+      }
+    });
+
+    // Magnetic buttons
+    const magBtns = document.querySelectorAll('.magnetic-btn');
+    magBtns.forEach(btn => {
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const h = rect.width / 2;
+        const v = rect.height / 2;
+        const x = e.clientX - rect.left - h;
+        const y = e.clientY - rect.top - v;
+        
+        gsap.to(btn, {
+          x: x * 0.3,
+          y: y * 0.3,
+          duration: 0.4,
+          ease: "power2.out"
+        });
+      });
+      
+      btn.addEventListener('mouseleave', () => {
+        gsap.to(btn, {
+          x: 0,
+          y: 0,
+          duration: 0.7,
+          ease: "elastic.out(1, 0.3)"
+        });
+      });
+    });
+  });
+</script>

@@ -8,11 +8,11 @@
 /* ─── RESET ─── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;scroll-behavior:auto}
-body{font-family:'Inter',sans-serif;background:#050505;color:#fff;overflow-x:hidden;cursor:none}
+body{font-family:'Inter',sans-serif;background:#050505;color:#fff;overflow-x:hidden;cursor:auto}
 a{text-decoration:none;color:inherit}
 /* B1 FIX: Don't set cursor:none on button globally — only on desktop via media query */
 button{border:none;background:none;font-family:inherit}
-@media(hover:hover) and (min-width:1025px){body,a,button,[role=button]{cursor:none}}
+@media(hover:hover) and (min-width:1025px){body,a,button,[role=button]{cursor:auto}}
 ul,ol{list-style:none}
 img,video{display:block;max-width:100%}
 ::selection{background:rgba(139,92,246,.4);color:#fff}

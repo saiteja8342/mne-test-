@@ -16,28 +16,36 @@
      ============================================================ */
   const preEl    = document.getElementById('preloader');
   const preFill  = document.getElementById('preFill');
-  let   pct      = 0;
   let   started  = false;
 
-  const pInt = setInterval(() => {
-    pct += Math.random() * 14 + 4;
-    if (pct >= 100) {
-      pct = 100;
-      clearInterval(pInt);
-      if (preFill) preFill.style.width = '100%';
-      setTimeout(() => {
-        if (preEl) preEl.classList.add('out');
-        if (!started) { started = true; boot(); }
-      }, 350);
-    } else {
+  function endPreloader() {
+    if (preFill) preFill.style.width = '100%';
+    setTimeout(() => {
+      if (preEl) preEl.classList.add('out');
+      if (!started) { started = true; boot(); }
+    }, 150);
+  }
+
+  if (document.readyState === 'complete') {
+    endPreloader();
+  } else {
+    let pct = 0;
+    const pInt = setInterval(() => {
+      pct += (100 - pct) * 0.1;
       if (preFill) preFill.style.width = pct + '%';
-    }
-  }, 55);
+    }, 100);
+    
+    window.addEventListener('load', () => {
+      clearInterval(pInt);
+      endPreloader();
+    });
+  }
 
   /* ============================================================
      BOOT — called after preloader
      ============================================================ */
   function boot() {
+    initAccessibility();
     initCursor();
     initCarouselDrag();
     initNavbar();
@@ -55,6 +63,7 @@
     initMagnetics();
     initContactForm();
     initParticles();
+    initLazyVideos();
   }
 
   /* ============================================================
@@ -365,13 +374,24 @@
         const el  = e.target;
         const end = parseFloat(el.dataset.count);
         if (isNaN(end)) return;
-        const dur = 1800, t0 = performance.now();
-        const run = now => {
-          const p = Math.min((now - t0) / dur, 1);
-          el.textContent = Math.floor(end * (1 - Math.pow(1 - p, 3)));
-          if (p < 1) requestAnimationFrame(run);
-          else el.textContent = end;
+        
+        const dur = 2000;
+        let startTimestamp = null;
+        
+        const run = (timestamp) => {
+          if (!startTimestamp) startTimestamp = timestamp;
+          const progress = Math.min((timestamp - startTimestamp) / dur, 1);
+          
+          const easeOutCubic = 1 - Math.pow(1 - progress, 3);
+          el.textContent = Math.floor(end * easeOutCubic);
+          
+          if (progress < 1) {
+            requestAnimationFrame(run);
+          } else {
+            el.textContent = end;
+          }
         };
+        
         requestAnimationFrame(run);
         io.unobserve(el);
       });
@@ -384,25 +404,6 @@
      WORK CARDS — hover video play
      ============================================================ */
   function initWorkCards() {
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        const vid = e.target.querySelector('.wc-vid');
-        if (!vid) return;
-        
-        if (e.isIntersecting) {
-          if (vid.dataset.manualPause !== 'true') {
-            vid.play().catch(() => {});
-            updatePlayBtn(e.target, true);
-          }
-        } else {
-          if (!vid.paused) {
-             vid.pause();
-             updatePlayBtn(e.target, false);
-          }
-        }
-      });
-    }, { threshold: 0.1 });
-
     function updatePlayBtn(card, isPlaying) {
       const iconPause = card.querySelector('.icon-pause');
       const iconPlay = card.querySelector('.icon-play');
@@ -416,7 +417,17 @@
       const vid = card.querySelector('.wc-vid');
       if (!vid) return;
 
-      io.observe(card);
+      // Autoplay on hover, pause on mouseout
+      card.addEventListener('mouseenter', () => {
+        if (vid.dataset.manualPause !== 'true') {
+          vid.play().catch(() => {});
+          updatePlayBtn(card, true);
+        }
+      });
+      card.addEventListener('mouseleave', () => {
+        vid.pause();
+        updatePlayBtn(card, false);
+      });
 
       const btnPlayPause = card.querySelector('.wc-btn-playpause');
       const btnMute = card.querySelector('.wc-btn-mute');
@@ -468,7 +479,6 @@
           }
         });
       }
-
     });
   }
   /* ============================================================
@@ -568,6 +578,24 @@
     const error   = document.getElementById('cfError');
     const submitBtn = document.getElementById('cfSubmit');
     const emailInput = document.getElementById('cfEmail');
+
+    // Handle Plan Selection
+    const cfPlan = document.getElementById('cfPlan');
+    const cfPlanWrap = document.getElementById('cfPlanWrap');
+    
+    document.querySelectorAll('a[href="#contact"]').forEach(link => {
+      link.addEventListener('click', () => {
+        if (!cfPlan || !cfPlanWrap) return;
+        if (link.classList.contains('price-btn')) {
+          cfPlan.value = link.getAttribute('data-plan') + ' Plan';
+          cfPlanWrap.style.display = 'block';
+        } else {
+          cfPlan.value = '';
+          cfPlanWrap.style.display = 'none';
+        }
+      });
+    });
+
     if (!form) return;
 
     form.addEventListener('submit', async e => {
@@ -680,4 +708,71 @@
     });
   }
 
+  /* ============================================================
+     LAZY VIDEOS
+     ============================================================ */
+  function initLazyVideos() {
+    const vids = document.querySelectorAll('.lazy-vid');
+    if (!vids.length || !('IntersectionObserver' in window)) return;
+    
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        const vid = e.target;
+        if (e.isIntersecting) {
+          // Load sources if not loaded yet
+          const sources = vid.querySelectorAll('source[data-src]');
+          let loaded = false;
+          sources.forEach(src => {
+            src.src = src.dataset.src;
+            src.removeAttribute('data-src');
+            loaded = true;
+          });
+          if (loaded) vid.load();
+
+          // Autoplay hero video only on desktop
+          if (vid.classList.contains('hero-vid') && window.innerWidth > 768) {
+             vid.play().catch(() => {});
+          }
+        } else {
+          vid.pause();
+        }
+      });
+    }, { rootMargin: '200px' });
+    
+    vids.forEach(v => io.observe(v));
+  }
+
 })();
+
+  /* ============================================================
+     ACCESSIBILITY / REDUCED MOTION
+     ============================================================ */
+  function initAccessibility() {
+    const animToggle = document.getElementById('animToggle');
+    let animsPaused = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function updateAnims() {
+      const heroCanvas = document.getElementById('heroCanvas');
+      if (animsPaused) {
+        if (window.gsap && gsap.globalTimeline) gsap.globalTimeline.pause();
+        if (heroCanvas) heroCanvas.style.display = 'none';
+        document.body.classList.add('reduced-motion');
+        if (animToggle) animToggle.textContent = 'Play Animations';
+      } else {
+        if (window.gsap && gsap.globalTimeline) gsap.globalTimeline.play();
+        if (heroCanvas && window.innerWidth > 768) heroCanvas.style.display = 'block';
+        document.body.classList.remove('reduced-motion');
+        if (animToggle) animToggle.textContent = 'Pause Animations';
+      }
+    }
+
+    if (animToggle) {
+      animToggle.addEventListener('click', () => {
+        animsPaused = !animsPaused;
+        updateAnims();
+      });
+    }
+    
+    // Initial check
+    updateAnims();
+  }

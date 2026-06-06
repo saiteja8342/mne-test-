@@ -493,37 +493,114 @@
             .hero-sub { max-width: 100%; }
         }
 
-        /* Testimonials */
+        /* Social Proof Section */
         .social-proof {
             background-color: var(--bg-secondary);
-            padding: 48px 0;
+            padding: 80px 0;
             text-align: center;
         }
         .social-proof-title {
             color: var(--text-tertiary);
-            margin-bottom: 24px;
+            margin-bottom: 48px;
             display: block;
         }
-        .client-list {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 24px 32px;
+
+        .trust-layout {
+            display: grid;
+            grid-template-columns: auto 1fr 1fr 1fr auto;
+            gap: 24px;
             align-items: center;
+            justify-content: center;
+            width: 100%;
         }
-        .client-name {
-            font-size: 22px;
-            color: var(--text-secondary);
-            font-family: 'Cormorant Garamond', serif;
-            font-weight: 300;
-            transition: color 0.3s;
-            cursor: default;
+
+        .trust-stat-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 24px;
+            transition: all 0.4s ease;
         }
-        .client-name:hover {
+
+        .trust-stat-block:hover {
+            text-shadow: 0 0 20px rgba(201,168,76,0.3);
+            transform: translateY(-2px);
+        }
+
+        .trust-stat-num {
+            font-size: 56px;
             color: var(--accent);
+            font-family: 'Cormorant Garamond', serif;
+            line-height: 1;
         }
-        .client-dot {
+
+        .trust-stat-label {
+            color: var(--text-secondary);
+            font-size: 10px;
+        }
+
+        .trust-review-card {
+            background: rgba(10, 10, 10, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(201, 168, 76, 0.15);
+            border-radius: 4px;
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .trust-review-card:hover {
+            transform: translateY(-4px) scale(1.01);
+            border-color: rgba(201, 168, 76, 0.4);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2), 0 0 20px rgba(201, 168, 76, 0.05);
+        }
+
+        .trust-stars {
+            color: var(--accent);
+            font-size: 14px;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+        }
+
+        .trust-review-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 18px;
+            font-weight: 300;
+            line-height: 1.5;
+            color: var(--text-primary);
+            margin-bottom: 24px;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .trust-review-author {
             color: var(--text-tertiary);
+            font-size: 10px;
+        }
+
+        @media (max-width: 1024px) {
+            .trust-layout {
+                grid-template-columns: 1fr;
+                gap: 24px;
+                max-width: 500px;
+                margin: 0 auto;
+            }
+            .trust-stat-block {
+                padding: 16px;
+            }
+            .trust-stat-num {
+                font-size: 48px;
+            }
         }
 
         /* PORTFOLIO */

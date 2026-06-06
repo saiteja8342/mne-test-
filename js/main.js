@@ -343,22 +343,53 @@ document.querySelectorAll('.v-reel-card').forEach(card => {
 // Contact Form
 const contactForm = document.getElementById('contactForm');
 if (contactForm) {
-  contactForm.addEventListener('submit', (e) => {
+  contactForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const btnText = contactForm.querySelector('.btn-text');
+    const submitBtn = contactForm.querySelector('button[type="submit"]');
+    const btnSpinner = contactForm.querySelector('.btn-spinner');
+    const successMsg = document.getElementById('formSuccess');
+    const errorMsg = document.getElementById('formError');
+
     if (btnText) btnText.textContent = 'Sending...';
-    
-    setTimeout(() => {
-      contactForm.reset();
-      if (btnText) btnText.textContent = 'Send Message →';
-      const successMsg = document.getElementById('formSuccess');
-      if (successMsg) {
-        successMsg.style.display = 'block';
-        setTimeout(() => {
-          successMsg.style.display = 'none';
-        }, 5000);
+    if (btnSpinner) btnSpinner.style.display = 'inline-block';
+    if (submitBtn) submitBtn.disabled = true;
+    if (successMsg) successMsg.style.display = 'none';
+    if (errorMsg) errorMsg.style.display = 'none';
+
+    try {
+      const formData = new FormData(contactForm);
+      const response = await fetch(contactForm.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        contactForm.reset();
+        if (successMsg) {
+          successMsg.style.display = 'block';
+          setTimeout(() => {
+            successMsg.style.display = 'none';
+          }, 5000);
+        }
+        if (typeof gtag === 'function') {
+          gtag('event', 'form_submit', {
+            form_name: 'Project Inquiry Form'
+          });
+        }
+      } else {
+        if (errorMsg) errorMsg.style.display = 'block';
       }
-    }, 1500);
+    } catch (error) {
+      if (errorMsg) errorMsg.style.display = 'block';
+    } finally {
+      if (btnText) btnText.textContent = 'Send Message →';
+      if (btnSpinner) btnSpinner.style.display = 'none';
+      if (submitBtn) submitBtn.disabled = false;
+    }
   });
 }
 

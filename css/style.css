@@ -901,6 +901,23 @@
             width: 100%;
             margin-top: 16px;
             cursor: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .form-btn:disabled {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        .btn-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
         }
 
         .contact-footer {
@@ -1504,6 +1521,18 @@
   padding: 12px;
   background: rgba(201, 168, 76, 0.1);
   border: 1px solid var(--accent);
+  color: var(--text-primary);
+  text-align: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  border-radius: 4px;
+}
+.form-error {
+  display: none;
+  margin-top: 16px;
+  padding: 12px;
+  background: rgba(255, 68, 68, 0.1);
+  border: 1px solid #ff4444;
   color: var(--text-primary);
   text-align: center;
   font-family: 'Cormorant Garamond', serif;

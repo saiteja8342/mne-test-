@@ -245,7 +245,112 @@
               });
             }
 
-// Video Controls
+            // Hero Video Controls
+            const heroVideoWrapper = document.querySelector('.hero-video-wrapper');
+            if (heroVideoWrapper && heroVideo) {
+              const playBtn = heroVideoWrapper.querySelector('.hero-play-pause');
+              const muteBtn = heroVideoWrapper.querySelector('.hero-mute-btn');
+              const fsBtn = heroVideoWrapper.querySelector('.hero-fullscreen-btn');
+
+              let heroHideTimeout;
+              heroVideoWrapper.addEventListener('touchstart', (e) => {
+                if (!e.target.closest('.v-btn')) {
+                    heroVideoWrapper.classList.toggle('show-controls');
+                    clearTimeout(heroHideTimeout);
+                    if (heroVideoWrapper.classList.contains('show-controls')) {
+                        heroHideTimeout = setTimeout(() => {
+                            heroVideoWrapper.classList.remove('show-controls');
+                        }, 3000);
+                    }
+                }
+              }, { passive: true });
+
+              if (playBtn) {
+                playBtn.addEventListener('click', e => {
+                  e.stopPropagation();
+                  const pausePath = playBtn.querySelector('.v-pause');
+                  const playPath  = playBtn.querySelector('.v-play');
+                  if (heroVideo.paused) {
+                    heroVideo.play().catch(() => {});
+                    if (pausePath) pausePath.style.display = '';
+                    if (playPath)  playPath.style.display  = 'none';
+                  } else {
+                    heroVideo.pause();
+                    if (pausePath) pausePath.style.display = 'none';
+                    if (playPath)  playPath.style.display  = '';
+                  }
+                });
+              }
+
+              if (muteBtn) {
+                muteBtn.addEventListener('click', e => {
+                  e.stopPropagation();
+                  heroVideo.muted = !heroVideo.muted;
+                  const soundOn  = muteBtn.querySelector('.v-sound-on');
+                  const soundOff = muteBtn.querySelector('.v-sound-off');
+                  if (soundOn)  soundOn.style.display  = heroVideo.muted ? 'none' : '';
+                  if (soundOff) soundOff.style.display = heroVideo.muted ? ''     : 'none';
+                });
+              }
+
+              if (fsBtn) {
+                fsBtn.addEventListener('click', e => {
+                  e.stopPropagation();
+                  if (heroVideo.requestFullscreen) {
+                    heroVideo.requestFullscreen();
+                  } else if (heroVideo.webkitRequestFullscreen) {
+                    heroVideo.webkitRequestFullscreen();
+                  } else if (heroVideo.msRequestFullscreen) {
+                    heroVideo.msRequestFullscreen();
+                  }
+                });
+              }
+            }
+
+// Video Controls Global State
+let isGlobalMuted = true;
+
+function applyGlobalMute() {
+  document.querySelectorAll('.h-video-card, .v-reel-card').forEach(card => {
+    const vid = card.querySelector('video');
+    const muteBtn = card.querySelector('.mute-btn, .v-mute-btn');
+    if (!vid) return;
+    
+    vid.muted = isGlobalMuted;
+    if (muteBtn) {
+      const iconOn = muteBtn.querySelector('.icon-unmuted, .v-sound-on');
+      const iconOff = muteBtn.querySelector('.icon-muted, .v-sound-off');
+      if (iconOn) iconOn.style.display = isGlobalMuted ? 'none' : '';
+      if (iconOff) iconOff.style.display = isGlobalMuted ? '' : 'none';
+    }
+  });
+}
+
+function togglePlayPause(vid, playPauseBtn) {
+  const iconPause = playPauseBtn ? playPauseBtn.querySelector('.icon-pause, .v-pause') : null;
+  const iconPlay  = playPauseBtn ? playPauseBtn.querySelector('.icon-play, .v-play') : null;
+  if (vid.paused) {
+    vid.play().catch(() => {});
+    if (iconPause) iconPause.style.display = '';
+    if (iconPlay)  iconPlay.style.display  = 'none';
+  } else {
+    vid.pause();
+    if (iconPause) iconPause.style.display = 'none';
+    if (iconPlay)  iconPlay.style.display  = '';
+  }
+}
+
+function toggleFullscreen(vid) {
+  if (vid.requestFullscreen) {
+    vid.requestFullscreen();
+  } else if (vid.webkitRequestFullscreen) {
+    vid.webkitRequestFullscreen();
+  } else if (vid.msRequestFullscreen) {
+    vid.msRequestFullscreen();
+  }
+}
+
+// Portfolio Horizontal Videos
 document.querySelectorAll('.h-video-card').forEach(card => {
   const vid = card.querySelector('.h-vid');
   if (!vid) return;
@@ -267,41 +372,47 @@ document.querySelectorAll('.h-video-card').forEach(card => {
 
   const playPauseBtn = card.querySelector('.play-pause-btn');
   const muteBtn = card.querySelector('.mute-btn');
+  const fsBtn = card.querySelector('.fullscreen-btn');
+
+  card.addEventListener('click', (e) => {
+    if (e.target.closest('.vid-btn')) return;
+    togglePlayPause(vid, playPauseBtn);
+  });
+
+  card.addEventListener('dblclick', (e) => {
+    if (e.target.closest('.vid-btn')) return;
+    toggleFullscreen(vid);
+  });
 
   if (playPauseBtn) {
     playPauseBtn.addEventListener('click', e => {
       e.stopPropagation();
-      const iconPause = playPauseBtn.querySelector('.icon-pause');
-      const iconPlay  = playPauseBtn.querySelector('.icon-play');
-      if (vid.paused) {
-        vid.play().catch(() => {});
-        if (iconPause) iconPause.style.display = '';
-        if (iconPlay)  iconPlay.style.display  = 'none';
-      } else {
-        vid.pause();
-        if (iconPause) iconPause.style.display = 'none';
-        if (iconPlay)  iconPlay.style.display  = '';
-      }
+      togglePlayPause(vid, playPauseBtn);
     });
   }
 
   if (muteBtn) {
     muteBtn.addEventListener('click', e => {
       e.stopPropagation();
-      vid.muted = !vid.muted;
-      const on  = muteBtn.querySelector('.icon-unmuted');
-      const off = muteBtn.querySelector('.icon-muted');
-      if (on)  on.style.display  = vid.muted ? 'none' : '';
-      if (off) off.style.display = vid.muted ? ''     : 'none';
+      isGlobalMuted = !isGlobalMuted;
+      applyGlobalMute();
+    });
+  }
+
+  if (fsBtn) {
+    fsBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      toggleFullscreen(vid);
     });
   }
 });
 
-// Reel Controls
+// Reel Vertical Videos
 document.querySelectorAll('.v-reel-card').forEach(card => {
   const vid      = card.querySelector('.v-vid');
   const playBtn  = card.querySelector('.v-play-pause');
   const muteBtn  = card.querySelector('.v-mute-btn');
+  const fsBtn    = card.querySelector('.v-fullscreen-btn');
   if (!vid) return;
 
   vid.play().catch(() => {});
@@ -319,46 +430,35 @@ document.querySelectorAll('.v-reel-card').forEach(card => {
     }
   }, { passive: true });
 
+  card.addEventListener('click', (e) => {
+    if (e.target.closest('.v-btn')) return;
+    togglePlayPause(vid, playBtn);
+  });
+
+  card.addEventListener('dblclick', (e) => {
+    if (e.target.closest('.v-btn')) return;
+    toggleFullscreen(vid);
+  });
+
   if (playBtn) {
     playBtn.addEventListener('click', e => {
       e.stopPropagation();
-      const pausePath = playBtn.querySelector('.v-pause');
-      const playPath  = playBtn.querySelector('.v-play');
-      if (vid.paused) {
-        vid.play().catch(() => {});
-        if (pausePath) pausePath.style.display = '';
-        if (playPath)  playPath.style.display  = 'none';
-      } else {
-        vid.pause();
-        if (pausePath) pausePath.style.display = 'none';
-        if (playPath)  playPath.style.display  = '';
-      }
+      togglePlayPause(vid, playBtn);
     });
   }
-
-  const fsBtn = card.querySelector('.v-fullscreen-btn');
 
   if (muteBtn) {
     muteBtn.addEventListener('click', e => {
       e.stopPropagation();
-      vid.muted = !vid.muted;
-      const soundOn  = muteBtn.querySelector('.v-sound-on');
-      const soundOff = muteBtn.querySelector('.v-sound-off');
-      if (soundOn)  soundOn.style.display  = vid.muted ? 'none' : '';
-      if (soundOff) soundOff.style.display = vid.muted ? ''     : 'none';
+      isGlobalMuted = !isGlobalMuted;
+      applyGlobalMute();
     });
   }
 
   if (fsBtn) {
     fsBtn.addEventListener('click', e => {
       e.stopPropagation();
-      if (vid.requestFullscreen) {
-        vid.requestFullscreen();
-      } else if (vid.webkitRequestFullscreen) { /* Safari */
-        vid.webkitRequestFullscreen();
-      } else if (vid.msRequestFullscreen) { /* IE11 */
-        vid.msRequestFullscreen();
-      }
+      toggleFullscreen(vid);
     });
   }
 });

@@ -83,29 +83,29 @@
             }
 
             // Loader
-            window.addEventListener('load', () => {
+            const initLoader = () => {
                 const tl = gsap.timeline();
 
                 // Load bar fills
                 tl.to('#loaderBar', {
                     scaleX: 1,
-                    duration: 1.8,
+                    duration: 0.3,
                     ease: 'power3.inOut'
                 })
                 // Split screen
                 .to('#loaderTop', {
                     yPercent: -100,
-                    duration: 0.9,
+                    duration: 0.4,
                     ease: 'power3.inOut'
-                }, "+=0.2")
+                }, "+=0.05")
                 .to('#loaderBottom', {
                     yPercent: 100,
-                    duration: 0.9,
+                    duration: 0.4,
                     ease: 'power3.inOut'
                 }, "<")
                 .to('#loaderContent', {
                     opacity: 0,
-                    duration: 0.4
+                    duration: 0.3
                 }, "<")
                 // Hide loader container
                 .set('#loader', { display: 'none' })
@@ -130,7 +130,10 @@
                 .to('#scrollIndicator', {
                     opacity: 1, y: 0, duration: 1, ease: 'power3.out'
                 }, "+=0.5");
-            });
+            };
+
+            // Run loader immediately since we are already in DOMContentLoaded
+            initLoader();
 
             // Navigation
             const nav = document.getElementById('nav');
@@ -247,13 +250,20 @@ document.querySelectorAll('.h-video-card').forEach(card => {
   const vid = card.querySelector('.h-vid');
   if (!vid) return;
 
-  card.addEventListener('mouseenter', () => {
-    vid.play().catch(() => {});
-  });
-  card.addEventListener('mouseleave', () => {
-    vid.pause();
-    vid.currentTime = 0;
-  });
+  vid.play().catch(() => {});
+
+  let hideTimeout;
+  card.addEventListener('touchstart', (e) => {
+    if (!e.target.closest('.vid-btn')) {
+        card.classList.toggle('show-controls');
+        clearTimeout(hideTimeout);
+        if (card.classList.contains('show-controls')) {
+            hideTimeout = setTimeout(() => {
+                card.classList.remove('show-controls');
+            }, 3000);
+        }
+    }
+  }, { passive: true });
 
   const playPauseBtn = card.querySelector('.play-pause-btn');
   const muteBtn = card.querySelector('.mute-btn');
@@ -295,6 +305,19 @@ document.querySelectorAll('.v-reel-card').forEach(card => {
   if (!vid) return;
 
   vid.play().catch(() => {});
+
+  let hideTimeout;
+  card.addEventListener('touchstart', (e) => {
+    if (!e.target.closest('.v-btn')) {
+        card.classList.toggle('show-controls');
+        clearTimeout(hideTimeout);
+        if (card.classList.contains('show-controls')) {
+            hideTimeout = setTimeout(() => {
+                card.classList.remove('show-controls');
+            }, 3000);
+        }
+    }
+  }, { passive: true });
 
   if (playBtn) {
     playBtn.addEventListener('click', e => {
@@ -504,4 +527,10 @@ if (waBtn && waPopup) {
     });
 }
 
+});
+
+
+// Block context menus on all videos to prevent downloading
+document.querySelectorAll('video').forEach(video => {
+  video.addEventListener('contextmenu', e => e.preventDefault());
 });

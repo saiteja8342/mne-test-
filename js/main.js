@@ -307,23 +307,15 @@
               }
             }
 
-// Video Controls Global State
-let isGlobalMuted = true;
-
-function applyGlobalMute() {
-  document.querySelectorAll('.h-video-card, .v-reel-card').forEach(card => {
-    const vid = card.querySelector('video');
-    const muteBtn = card.querySelector('.mute-btn, .v-mute-btn');
-    if (!vid) return;
-    
-    vid.muted = isGlobalMuted;
-    if (muteBtn) {
-      const iconOn = muteBtn.querySelector('.icon-unmuted, .v-sound-on');
-      const iconOff = muteBtn.querySelector('.icon-muted, .v-sound-off');
-      if (iconOn) iconOn.style.display = isGlobalMuted ? 'none' : '';
-      if (iconOff) iconOff.style.display = isGlobalMuted ? '' : 'none';
-    }
-  });
+function toggleMute(vid, muteBtn) {
+  if (!vid) return;
+  vid.muted = !vid.muted;
+  if (muteBtn) {
+    const iconOn = muteBtn.querySelector('.icon-unmuted, .v-sound-on');
+    const iconOff = muteBtn.querySelector('.icon-muted, .v-sound-off');
+    if (iconOn) iconOn.style.display = vid.muted ? 'none' : '';
+    if (iconOff) iconOff.style.display = vid.muted ? '' : 'none';
+  }
 }
 
 function togglePlayPause(vid, playPauseBtn) {
@@ -394,8 +386,7 @@ document.querySelectorAll('.h-video-card').forEach(card => {
   if (muteBtn) {
     muteBtn.addEventListener('click', e => {
       e.stopPropagation();
-      isGlobalMuted = !isGlobalMuted;
-      applyGlobalMute();
+      toggleMute(vid, muteBtn);
     });
   }
 
@@ -450,8 +441,7 @@ document.querySelectorAll('.v-reel-card').forEach(card => {
   if (muteBtn) {
     muteBtn.addEventListener('click', e => {
       e.stopPropagation();
-      isGlobalMuted = !isGlobalMuted;
-      applyGlobalMute();
+      toggleMute(vid, muteBtn);
     });
   }
 
